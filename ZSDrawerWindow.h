@@ -25,6 +25,8 @@
  */
 - (void)setDrawerWindowCustomWithTopController:(UIViewController *)controller space:(CGFloat)leftSpace windowY:(CGFloat)y windowSpaceToBottoom:(CGFloat)bottom  backWindowAlpha:(CGFloat)backWindowAlpha;
 
+- (void)setdrawerWindowSheetAlertWithTopControler:(UIViewController *)controller height:(CGFloat)height;
+
 - (void)setdrawerWindowAlterWithTopControler:(UIViewController *)controller height:(CGFloat)height;
 /**
  *   返回

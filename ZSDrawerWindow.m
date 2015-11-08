@@ -80,8 +80,7 @@ static CGFloat space = 100;
 }
 
 static CGFloat height = 0;
-- (void)setdrawerWindowAlterWithTopControler:(UIViewController *)controller height:(CGFloat)height
-{
+- (void)setdrawerWindowSheetAlertWithTopControler:(UIViewController *)controller height:(CGFloat)height{
     height = height;
     [self setDrawerAlterSpaceView];
      self.window = [self createWindowWithController:controller];
@@ -91,8 +90,8 @@ static CGFloat height = 0;
         self.window.frame = CGRectMake(0, KSCREENHEIGHT - height, KSCREENWIDTH, height);
     }];
 }
-- (void)setDrawerAlterSpaceView
-{
+
+- (void)setDrawerAlterSpaceView{
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(alterBack)];
     self.spaceWindow = [self createWindowWithController:nil];
     self.spaceWindow.windowLevel = UIWindowLevelStatusBar;
@@ -151,6 +150,14 @@ static CGFloat height = 0;
             }
         }];
     }
+}
+
+- (void)setdrawerWindowAlterWithTopControler:(UIViewController *)controller height:(CGFloat)height{
+    height = height;
+    [self setDrawerAlterSpaceView];
+    self.window = [self createWindowWithController:controller];
+    self.window.windowLevel = UIWindowLevelAlert;
+    self.window.frame = CGRectMake(60, KSCREENHEIGHT / 2 - height, KSCREENWIDTH - 120, height);
 }
 
 @end
