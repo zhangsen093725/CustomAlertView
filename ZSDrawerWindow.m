@@ -27,10 +27,12 @@
     });
     return manager;
 }
+// 默认值
 static CGFloat windowY = 20;
 static CGFloat windowBottom = 0;
 static CGFloat alpha = 0.1;
 static CGFloat space = 100;
+
 - (UIWindow *)createWindowWithController:(UIViewController *)controller
 {
     UIWindow *window = [[UIWindow alloc]init];
@@ -40,7 +42,7 @@ static CGFloat space = 100;
     controller.view.frame = window.bounds;
     return window;
 }
-
+// 默认的状态
 - (void)setDrawerWindowDefualtWithTopController:(UIViewController *)controller andSpace:(CGFloat)leftSpace
 {
     space = leftSpace;
@@ -52,7 +54,7 @@ static CGFloat space = 100;
         self.window.frame = CGRectMake(space, windowY, KSCREENWIDTH - space, KSCREENHEIGHT);
     } completion:nil];
 }
-
+// 自定义的状态
 - (void)setDrawerWindowCustomWithTopController:(UIViewController *)controller space:(CGFloat)leftSpace windowY:(CGFloat)y windowSpaceToBottoom:(CGFloat)bottom  backWindowAlpha:(CGFloat)backWindowAlpha;
 {
     windowBottom = bottom;
@@ -68,6 +70,7 @@ static CGFloat space = 100;
     } completion:nil];
 }
 
+// 背景遮盖
 - (void)setDrawerDefualtSpaceView
 {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back)];
@@ -79,6 +82,7 @@ static CGFloat space = 100;
     [self.spaceWindow addGestureRecognizer:tap];
 }
 
+#pragma mark --- 自定义的SheetAlert
 static CGFloat height = 0;
 - (void)setdrawerWindowSheetAlertWithTopControler:(UIViewController *)controller height:(CGFloat)height{
     height = height;
@@ -113,6 +117,7 @@ static CGFloat height = 0;
     }];
 }
 
+#pragma mark --- 退出
 - (void)back
 {
     if (!self.window) {
@@ -150,14 +155,6 @@ static CGFloat height = 0;
             }
         }];
     }
-}
-
-- (void)setdrawerWindowAlterWithTopControler:(UIViewController *)controller height:(CGFloat)height{
-    height = height;
-    [self setDrawerAlterSpaceView];
-    self.window = [self createWindowWithController:controller];
-    self.window.windowLevel = UIWindowLevelAlert;
-    self.window.frame = CGRectMake(60, KSCREENHEIGHT / 2 - height, KSCREENWIDTH - 120, height);
 }
 
 @end
