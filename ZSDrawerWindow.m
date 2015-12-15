@@ -85,7 +85,6 @@ static CGFloat space = 100;
 #pragma mark --- 自定义的SheetAlert
 static CGFloat height = 0;
 - (void)setdrawerWindowSheetAlertWithTopControler:(UIViewController *)controller height:(CGFloat)height{
-    height = height;
     [self setDrawerAlterSpaceView];
      self.window = [self createWindowWithController:controller];
     self.window.windowLevel = UIWindowLevelAlert;
@@ -115,6 +114,13 @@ static CGFloat height = 0;
         self.spaceWindow = nil;
         self.window  = nil;
     }];
+}
+// AlertView
+- (void)setdrawerWindowAlterWithTopControler:(UIViewController *)controller height:(CGFloat)height{
+    [self setDrawerAlterSpaceView];
+    self.window = [self createWindowWithController:controller];
+    self.window.windowLevel = UIWindowLevelAlert;
+    self.window.frame = CGRectMake(60, KSCREENHEIGHT / 2 - height, KSCREENWIDTH - 120, height);
 }
 
 #pragma mark --- 退出
