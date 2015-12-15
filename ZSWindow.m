@@ -75,18 +75,24 @@
     
 }
 
-- (void)alterBack
-{
-    if (!self.window) {
-        [self.spaceView removeFromSuperview];
-        return;
-    }
+- (void)seetAlterBack{
     [UIView animateWithDuration:0.2 animations:^{
         self.window.frame = CGRectMake(0, KSCREENHEIGHT, KSCREENWIDTH, _height);
     } completion:^(BOOL finished) {
         [self.spaceView removeFromSuperview];
         self.window  = nil;
     }];
+
+}
+
+- (void)alterBack
+{
+    if (!self.window) {
+        [self.spaceView removeFromSuperview];
+        return;
+    }
+    [self.spaceView removeFromSuperview];
+    self.window  = nil;
 }
 
 - (void)pan:(UIPanGestureRecognizer *)pan

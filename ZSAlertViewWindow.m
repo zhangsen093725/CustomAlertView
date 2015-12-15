@@ -27,7 +27,9 @@
     [self setDrawerAlterSpaceView:backController];
     self.window = [self createWindowWithController:controller];
     self.window.windowLevel = UIWindowLevelAlert;
-    self.window.frame = CGRectMake(60, KSCREENHEIGHT / 2 - height, KSCREENWIDTH - 120, height);
+    self.window.frame = CGRectMake(60, KSCREENHEIGHT *0.5 - height*0.5, KSCREENWIDTH - 120, height);
+    self.window.layer.cornerRadius = 20;
+    self.window.clipsToBounds = YES;
 }
 
 - (void)alterBack{
