@@ -26,4 +26,5 @@ static CGFloat _height = 0;
 - (UIWindow *)createWindowWithController:(UIViewController *)controller;
 - (void)back;
 - (void)alterBack;
+- (void)seetAlterBack;
 @end

@@ -13,9 +13,10 @@
 @end
 
 @implementation ZSWindow
-
+static ZSWindow * manager = nil;
 + (instancetype)windowManager{
-    static ZSWindow * manager = nil;
+    if([manager isKindOfClass:self])
+        return manager;
     manager = [[self alloc]init];
     return manager;
 }
@@ -76,8 +77,9 @@
     [UIView animateWithDuration:0.2 animations:^{
         self.window.frame = CGRectMake(0, KSCREENHEIGHT, KSCREENWIDTH, _height);
     } completion:^(BOOL finished) {
-        [self.spaceView removeFromSuperview];
         self.window  = nil;
+        [self.spaceView removeFromSuperview];
+        
     }];
 
 }
@@ -88,8 +90,10 @@
         [self.spaceView removeFromSuperview];
         return;
     }
-    [self.spaceView removeFromSuperview];
+    [self.window resignKeyWindow];
     self.window  = nil;
+    [self.spaceView removeFromSuperview];
+    
 }
 
 - (void)pan:(UIPanGestureRecognizer *)pan
