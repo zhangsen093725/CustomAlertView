@@ -9,22 +9,28 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#define KSCREENWIDTH [UIScreen mainScreen].bounds.size.width
-#define KSCREENHEIGHT [UIScreen mainScreen].bounds.size.height
-
-static CGFloat _windowBottom = 0;
-static CGFloat _space = 100;
-static CGFloat _windowY = 20;
-static CGFloat _alpha = 0.1;
-static CGFloat _height = 0;
+typedef NS_ENUM(NSInteger,CustomerWindowType){
+    CustomerWindowDrawer,
+    CustomerWindowSheet,
+    CustomerWindowAlert
+};
 
 @interface ZSWindow : NSObject
-@property (nonatomic, strong) UIWindow *window;
 + (instancetype)windowManager;
-- (void)setDrawerDefualtSpaceView:(UIViewController *)controller;
-- (void)setDrawerAlterSpaceView:(UIViewController *)controller;
-- (UIWindow *)createWindowWithController:(UIViewController *)controller;
+/**
+ *  创建需要弹出的控制器,space为需要留出的空隙宽度
+ *
+ *  @param controller <#controller description#>
+ *  @param space      <#space description#>
+ */
+- (void)setDrawerWindowDefualtShowController:(UIViewController *)controller space:(CGFloat)space;
+/**
+ *  创建需要弹出的控制器,space为需要留出的空隙宽度
+ *
+ *  @param controller <#controller description#>
+ *  @param space      <#space description#>
+ */
+- (void)setDrawerWindowCustomType:(CustomerWindowType)CustomerWindowType ShowController:(UIViewController *)controller left:(CGFloat)left right:(CGFloat)right top:(CGFloat)top bottoom:(CGFloat)bottom  alpha:(CGFloat)alpha;
+
 - (void)back;
-- (void)alterBack;
-- (void)seetAlterBack;
 @end
