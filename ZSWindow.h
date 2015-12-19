@@ -16,19 +16,15 @@ typedef NS_ENUM(NSInteger,CustomerWindowType){
 };
 
 @interface ZSWindow : NSObject
+@property (nonatomic ,assign) BOOL isNeedTapGesture;
+
 + (instancetype)windowManager;
 /**
- *  创建需要弹出的控制器,space为需要留出的空隙宽度
- *
- *  @param controller <#controller description#>
- *  @param space      <#space description#>
+ *  创建需要弹出的控制器,在对应的控制器中需要调用prefersStatusBarHidden方法为返回为NO
  */
 - (void)setDrawerWindowDefualtShowController:(UIViewController *)controller space:(CGFloat)space;
 /**
- *  创建需要弹出的控制器,space为需要留出的空隙宽度
- *
- *  @param controller <#controller description#>
- *  @param space      <#space description#>
+ *  创建需要弹出的自定义控制器，在对应的控制器中需要调用prefersStatusBarHidden方法为返回为NO
  */
 - (void)setDrawerWindowCustomType:(CustomerWindowType)CustomerWindowType ShowController:(UIViewController *)controller left:(CGFloat)left right:(CGFloat)right top:(CGFloat)top bottoom:(CGFloat)bottom  alpha:(CGFloat)alpha;
 

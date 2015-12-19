@@ -44,6 +44,12 @@
     _alpha = 0.1;
 }
 
+- (void)setIsNeedTapGesture:(BOOL)isNeedTapGesture{
+    if (isNeedTapGesture) {
+        [self tapGesture];
+    }
+}
+
 // 默认的状态
 - (void)setDrawerWindowDefualtShowController:(UIViewController *)controller space:(CGFloat)space{
     _customerWindowType = 0;
@@ -80,32 +86,38 @@
     }
 }
 
+- (void)tapGesture{
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back)];
+    [self.spaceView addGestureRecognizer:tap];
+
+}
+
 // 背景遮盖
 - (void)setDrawerBackView{
     [self createSpaceView];
-    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(pan:)];
+    [self tapGesture];
+      UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(pan:)];
     [self.spaceView addGestureRecognizer:pan];
 }
 
-
+#pragma mark --- 不同的控制器
 - (void)drawerController:(UIViewController *)controller{
     [self createWindowController:controller];
     self.window.frame = CGRectMake(KSCREENWIDTH, _top, KSCREENWIDTH - _left - _right, KSCREENHEIGHT- _top - _bottom);
-    [UIView animateWithDuration:0.2 delay:0.1 options:UIViewAnimationOptionCurveEaseIn animations:^{
-        self.window.frame = CGRectMake(_left, _top, KSCREENWIDTH - _left, KSCREENHEIGHT - _top - _bottom);
-    } completion:nil];
+    [self animationFrame:CGRectMake(_left, _top, KSCREENWIDTH - _left, KSCREENHEIGHT - _top - _bottom) Alpha:_alpha isBack:NO];
 }
-#pragma mark --- 不同的控制器
+
 - (void)sheetController:(UIViewController *)controller{
     [self createWindowController:controller];
-    self.window.frame = CGRectMake(_left, KSCREENHEIGHT, KSCREENWIDTH - _left - _right, KSCREENHEIGHT - _top);
-    [UIView animateWithDuration:0.2 delay:0.1 options:UIViewAnimationOptionCurveEaseIn animations:^{
-        self.window.frame = CGRectMake(0, _top, KSCREENWIDTH, KSCREENHEIGHT - _top);
-    } completion:nil];
+    self.window.frame = CGRectMake(0, KSCREENHEIGHT, KSCREENWIDTH, KSCREENHEIGHT - _top);
+    [self animationFrame:CGRectMake(0, _top, KSCREENWIDTH, KSCREENHEIGHT - _top) Alpha:_alpha isBack:NO];
 }
 
 - (void)alterController:(UIViewController *)controller{
     [self createWindowController:controller];
+    [UIView animateWithDuration:0.25 animations:^{
+        self.spaceView.alpha = _alpha;
+    }];
     self.window.frame = CGRectMake(_left , (_top+_bottom)*0.5, KSCREENWIDTH-_left-_right, KSCREENHEIGHT-_top-_bottom);
     self.window.layer.cornerRadius = 20;
     self.window.clipsToBounds = YES;
@@ -115,7 +127,7 @@
     UIWindow *window = [[UIWindow alloc]init];
     window.backgroundColor = [[UIColor clearColor]colorWithAlphaComponent:_alpha];
     window.hidden = NO;
-    //    controller.view.frame = window.bounds;
+    controller.view.frame = window.bounds;
     window.rootViewController = controller;
     self.window = window;
 }
@@ -123,12 +135,10 @@
 - (void)createSpaceView{
     UIView * view = [[UIView alloc]init];
     view.backgroundColor = [UIColor blackColor];
-    view.alpha = _alpha;
+    view.alpha = 0;
     [[UIApplication sharedApplication].keyWindow addSubview:view];
     self.spaceView = view;
     self.spaceView.frame = CGRectMake(0, 20, KSCREENWIDTH, KSCREENHEIGHT);
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back)];
-    [self.spaceView addGestureRecognizer:tap];
 }
 
 #pragma mark --- 退出
@@ -155,22 +165,34 @@
 }
 
 - (void)drawerBack{
-    [UIView animateWithDuration:0.2 animations:^{
-        self.window.frame = CGRectMake(KSCREENWIDTH, _top, KSCREENWIDTH - _left, KSCREENHEIGHT - _top - _bottom);
-    } completion:^(BOOL finished) {
-        [self alterBack];
-    }];
+    [self animationFrame:CGRectMake(KSCREENWIDTH, _top, KSCREENWIDTH - _left, KSCREENHEIGHT - _top - _bottom) Alpha:0 isBack:YES];
 }
 
 - (void)sheetBack{
-    [UIView animateWithDuration:0.2 animations:^{
-        self.window.frame = CGRectMake(_left, KSCREENHEIGHT, KSCREENWIDTH - _left, KSCREENHEIGHT - _top - _bottom);
-    } completion:^(BOOL finished) {
-        [self alterBack];
-    }];
+    [self animationFrame:CGRectMake(0, KSCREENHEIGHT, KSCREENWIDTH , KSCREENHEIGHT - _top - _bottom) Alpha:0 isBack:YES];
 }
 
 - (void)alterBack{
+    [UIView animateWithDuration:0.25 animations:^{
+        self.spaceView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [self destroy];
+    }];
+}
+
+- (void)animationFrame:(CGRect)frame Alpha:(CGFloat)alpha isBack:(BOOL)isBack{
+    [UIView animateWithDuration:0.25 animations:^{
+        self.window.frame = frame;
+        self.spaceView.alpha = alpha;
+    } completion:^(BOOL finished) {
+        if (isBack) {
+            [self destroy];
+        }
+    }];
+}
+
+- (void)destroy{
+    self.window.hidden = YES;
     self.window  = nil;
     [self.spaceView removeFromSuperview];
     self.spaceView = nil;
