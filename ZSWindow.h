@@ -11,6 +11,7 @@
 
 typedef NS_ENUM(NSInteger,CustomerWindowType){
     CustomerWindowDrawer,
+    CustomerWindowCurtain,
     CustomerWindowSheet,
     CustomerWindowAlert
 };

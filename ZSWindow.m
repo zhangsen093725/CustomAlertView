@@ -81,7 +81,9 @@
             [self createSpaceView];
             [self alterController:controller];
             break;
-        default:
+        case CustomerWindowCurtain:
+            [self setCurtainBackView];
+            [self curtainController:controller];
             break;
     }
 }
@@ -93,10 +95,17 @@
 }
 
 // 背景遮盖
+- (void)setCurtainBackView{
+    [self createSpaceView];
+    [self tapGesture];
+    UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(curtainPan:)];
+    [self.spaceView addGestureRecognizer:pan];
+}
+
 - (void)setDrawerBackView{
     [self createSpaceView];
     [self tapGesture];
-      UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(pan:)];
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(drawerPan:)];
     [self.spaceView addGestureRecognizer:pan];
 }
 
@@ -105,6 +114,12 @@
     [self createWindowController:controller];
     self.window.frame = CGRectMake(KSCREENWIDTH, _top, KSCREENWIDTH - _left - _right, KSCREENHEIGHT- _top - _bottom);
     [self animationFrame:CGRectMake(_left, _top, KSCREENWIDTH - _left, KSCREENHEIGHT - _top - _bottom) Alpha:_alpha isBack:NO];
+}
+
+- (void)curtainController:(UIViewController *)controller{
+    [self createWindowController:controller];
+    self.window.frame = CGRectMake(0, -KSCREENHEIGHT, KSCREENWIDTH, KSCREENHEIGHT);
+    [self animationFrame:CGRectMake(0, 0, KSCREENWIDTH, KSCREENHEIGHT- _bottom) Alpha:_alpha isBack:NO];
 }
 
 - (void)sheetController:(UIViewController *)controller{
@@ -159,13 +174,18 @@
         case CustomerWindowDrawer:
             [self drawerBack];
             break;
-        default:
+        case CustomerWindowCurtain:
+            [self curtainBack];
             break;
     }
 }
 
 - (void)drawerBack{
     [self animationFrame:CGRectMake(KSCREENWIDTH, _top, KSCREENWIDTH - _left, KSCREENHEIGHT - _top - _bottom) Alpha:0 isBack:YES];
+}
+
+- (void)curtainBack{
+    [self animationFrame:CGRectMake(0, -KSCREENHEIGHT, KSCREENWIDTH, KSCREENHEIGHT) Alpha:0 isBack:YES];
 }
 
 - (void)sheetBack{
@@ -198,7 +218,30 @@
     self.spaceView = nil;
 }
 
-- (void)pan:(UIPanGestureRecognizer *)pan
+- (void)curtainPan:(UIPanGestureRecognizer *)pan{
+    CGPoint point = [pan translationInView:self.spaceView];
+    CGRect rect = self.window.frame;
+    if (point.y < 0) {
+        rect.origin.y = point.y;
+        self.window.frame = rect;
+    }
+    if (pan.state == UIGestureRecognizerStateEnded) {
+        if (-(point.y - _bottom) > self.spaceView.frame.size.height * 0.5) {
+            rect.origin.y = -self.spaceView.frame.size.height;
+        }else{
+            rect.origin.y = 0;
+        }
+        [UIView animateWithDuration:(-self.window.frame.origin.y) / self.window.frame.size.height * 0.25 animations:^{
+            self.window.frame = rect;
+        } completion:^(BOOL finished) {
+            if (rect.origin.y < 0) {
+                [self curtainBack];
+            }
+        }];
+    }
+}
+
+- (void)drawerPan:(UIPanGestureRecognizer *)pan
 {
     CGPoint point = [pan translationInView:self.spaceView];
     CGRect rect = self.window.frame;
@@ -207,7 +250,7 @@
         self.window.frame = rect;
     }
     if (pan.state == UIGestureRecognizerStateEnded) {
-        if (point.x + _left > self.spaceView.frame.size.width / 2) {
+        if (point.x + _left > self.spaceView.frame.size.width * 0.5) {
             rect.origin.x = self.spaceView.frame.size.width;
         }else{
             rect.origin.x = _left;
